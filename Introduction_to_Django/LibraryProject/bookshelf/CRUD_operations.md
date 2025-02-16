@@ -7,13 +7,13 @@ create command:
 1984
 
 retrieve command:
->>> book = Book.objects.all()
+>>> book = Book.objects.get("1984")
 >>> print(book)
 <QuerySet [<Book: 1984>]>
 
 
 update command:
->>> book = Book.objects.get(title="1984")
+>>> book = Book.objects.get("1984")
 >>> book.title = "Nineteen Eighty-Four"
 >>> book.save()
 >>> print(book)
