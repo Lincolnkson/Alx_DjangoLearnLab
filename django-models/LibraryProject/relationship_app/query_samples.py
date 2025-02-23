@@ -15,16 +15,19 @@ Retrieve the librarian for a library.
 # List all books in a library.
 # Retrieve the librarian for a library.
 def query_samples():
+
+          library = Library.objects.get(name="library_name")
+          
           # Query all books by a specific author.
           author = Author.objects.get(name="John Doe")
           books = author.books.all()
           print(books)
 
           # List all books in a library.
-          #LibraryProject/relationship_app/query_samples.py doesn't contain: ["Library.objects.get(name=library_name)"]
-          library = Library.objects.get(name="Library Name")
+
           books = library.books.all()
           print(books)
+
 
           # Retrieve the librarian for a library.
           librarian = library.librarian.all()
