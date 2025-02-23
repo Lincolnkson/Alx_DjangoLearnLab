@@ -21,12 +21,12 @@ def query_samples():
           print(books)
 
           # List all books in a library.
-          library = Library.objects.get(id=1)
+          #LibraryProject/relationship_app/query_samples.py doesn't contain: ["Library.objects.get(name=library_name)"]
+          library = Library.objects.get(name="Library Name")
           books = library.books.all()
           print(books)
 
           # Retrieve the librarian for a library.
-          library = Library.objects.get(id=1)
           librarian = library.librarian.all()
           print(librarian)
 
