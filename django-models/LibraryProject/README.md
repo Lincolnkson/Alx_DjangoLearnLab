@@ -7,3 +7,4 @@ Tasks
 
 Week 10 
 0. Implementing Advanced Model Relationships in Django
+1. Django Views and URL Configuration
