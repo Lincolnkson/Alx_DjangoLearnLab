@@ -97,7 +97,7 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 @login_required
 @user_passes_test(lambda u: u.userprofile.role == 'Admin')
-def admin_view(request):
+def Admin(request):
     context = {
         # 'title': 'Admin Dashboard',
         # 'user_count': User.objects.count(),
@@ -107,8 +107,8 @@ def admin_view(request):
     return render(request, 'admin_dashboard.html', context)
 
 @login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Librarian')
-def librarian_view(request):
+@user_passes_test(lambda u: u.userprofile.role == 'Librarians')
+def Librarian(request):
     context = {
         'title': 'Librarian Dashboard',
         'books': Book.objects.all()  # Assuming you have a Book model
@@ -118,7 +118,7 @@ def librarian_view(request):
 
 @login_required
 @user_passes_test(lambda u: u.userprofile.role == 'Member')
-def member_view(request):
+def Member(request):
     context = {
         # 'title': 'Member Dashboard',
         # 'borrowed_books': Book.objects.filter(borrower=request.user),
