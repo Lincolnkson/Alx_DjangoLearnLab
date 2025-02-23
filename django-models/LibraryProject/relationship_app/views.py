@@ -93,17 +93,17 @@ Utilize the @user_passes_test decorator to check the user’s role before granti
 """
 from django.contrib.auth.decorators import user_passes_test
 
-@user_passes_test(lambda u: u.userprofile.role == 'Admin')
-def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html')
-#create class UserProfile(models.Model):
+#Checks for An ‘Admin’ view that only users with the ‘Admin’ role can access. task
 
+@user_passes_test(lambda u: u.userprofile.role == 'Admin')
+def admin(request):
+    return render(request, 'relationship_app/admin_view.html')
 
 @user_passes_test(lambda u: u.userprofile.role == 'Librarian')
-def librarian_view(request):
+def librarian(request):
     return render(request, 'relationship_app/librarian_view.html')
 
 @user_passes_test(lambda u: u.userprofile.role == 'Member')
-def member_view(request):
+def member_(request):
     return render(request, 'relationship_app/member_view.html')
 
