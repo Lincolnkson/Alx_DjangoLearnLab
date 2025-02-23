@@ -92,11 +92,11 @@ Access Control:
 Utilize the @user_passes_test decorator to check the user’s role before granting access to each view.
 """
 from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from decorators import role_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+
 
 @login_required
-@role_required('ADMIN')
+@user_passes_test(lambda u: u.userprofile.role == 'Admin')
 def admin_view(request):
     context = {
         # 'title': 'Admin Dashboard',
@@ -107,17 +107,17 @@ def admin_view(request):
     return render(request, 'admin_dashboard.html', context)
 
 @login_required
-@role_required('LIBRARIAN')
+@user_passes_test(lambda u: u.userprofile.role == 'Librarian')
 def librarian_view(request):
     context = {
         'title': 'Librarian Dashboard',
         'books': Book.objects.all()  # Assuming you have a Book model
         # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
     }
-    return render(request, 'librarian_dashboard.html', context)
+    return render(request, 'librarian_view.html', context)
 
 @login_required
-@role_required('MEMBER')
+@user_passes_test(lambda u: u.userprofile.role == 'Member')
 def member_view(request):
     context = {
         # 'title': 'Member Dashboard',
