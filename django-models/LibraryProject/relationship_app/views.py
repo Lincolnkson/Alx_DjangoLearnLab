@@ -91,19 +91,38 @@ Access Control:
 
 Utilize the @user_passes_test decorator to check the user’s role before granting access to each view.
 """
-# from django.contrib.auth.decorators import user_passes_test
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from decorators import role_required
 
-# #Checks for An ‘Admin’ view that only users with the ‘Admin’ role can access. task
+@login_required
+@role_required('ADMIN')
+def admin_view(request):
+    context = {
+        # 'title': 'Admin Dashboard',
+        # 'user_count': User.objects.count(),
+        # 'librarian_count': UserProfile.objects.filter(role='LIBRARIAN').count(),
+        # 'member_count': UserProfile.objects.filter(role='MEMBER').count(),
+    }
+    return render(request, 'admin_dashboard.html', context)
 
-# @user_passes_test(lambda u: u.userprofile.role == 'Admin')
-# def admin(request):
-#     return render(request, 'relationship_app/admin_view.html')
+@login_required
+@role_required('LIBRARIAN')
+def librarian_view(request):
+    context = {
+        'title': 'Librarian Dashboard',
+        'books': Book.objects.all()  # Assuming you have a Book model
+        # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
+    }
+    return render(request, 'librarian_dashboard.html', context)
 
-# @user_passes_test(lambda u: u.userprofile.role == 'Librarian')
-# def librarian(request):
-#     return render(request, 'relationship_app/librarian_view.html')
-
-# @user_passes_test(lambda u: u.userprofile.role == 'Member')
-# def member_(request):
-#     return render(request, 'relationship_app/member_view.html')
+@login_required
+@role_required('MEMBER')
+def member_view(request):
+    context = {
+        # 'title': 'Member Dashboard',
+        # 'borrowed_books': Book.objects.filter(borrower=request.user),
+        # 'reading_history': ReadingHistory.objects.filter(user=request.user),
+    }
+    return render(request, 'member_dashboard.html', context)
 
