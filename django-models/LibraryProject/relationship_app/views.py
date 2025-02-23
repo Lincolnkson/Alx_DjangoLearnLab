@@ -68,9 +68,10 @@ def logout_view(request):
     return render(request, 'relationship_app/logout.html')
 
 # create a view for the registration form
+# LibraryProject/relationship_app/views.py doesn't contain: ["UserCreationForm()"]
 class register(FormView):
         template_name = 'relationship_app/register.html'
-        form_class = UserCreationForm
+        form_class = UserCreationForm()
         success_url = reverse_lazy('login')
      
         def form_valid(self, form):
