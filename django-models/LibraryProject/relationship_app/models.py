@@ -49,13 +49,13 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.translation import gettext_lazy as _
 
-class UserProfile:
+class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     role = models.CharField(max_length=10, choices=[('Admin', _('Admin')), ('Librarian', _('Librarian')), ('Member', _('Member'))])
 
     def __str__(self):
         return self.user.username
     
-    
+
 
 
