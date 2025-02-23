@@ -29,7 +29,7 @@ from django.contrib import messages
 
 
 from django.contrib.auth import logout
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -91,38 +91,57 @@ Access Control:
 
 Utilize the @user_passes_test decorator to check the user’s role before granting access to each view.
 """
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required, user_passes_test
+# Constants for role names to avoid typos and ensure consistency
+ROLE_ADMIN = 'ADMIN'
+ROLE_LIBRARIAN = 'LIBRARIAN'
+ROLE_MEMBER = 'MEMBER'
 
+# Role check functions
+def is_admin(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == ROLE_ADMIN
+
+def is_librarian(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == ROLE_LIBRARIAN
+
+def is_member(user):
+    return hasattr(user, 'userprofile') and user.userprofile.role == ROLE_MEMBER
 
 @login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Admin')
-def Admin(request):
+@user_passes_test(is_admin)
+def admin_dashboard(request):
+    """
+    Admin dashboard view - accessible only to users with Admin role
+    """
     context = {
         # 'title': 'Admin Dashboard',
         # 'user_count': User.objects.count(),
-        # 'librarian_count': UserProfile.objects.filter(role='LIBRARIAN').count(),
-        # 'member_count': UserProfile.objects.filter(role='MEMBER').count(),
+        # 'librarian_count': UserProfile.objects.filter(role=ROLE_LIBRARIAN).count(),
+        # 'member_count': UserProfile.objects.filter(role=ROLE_MEMBER).count(),
     }
     return render(request, 'admin_dashboard.html', context)
 
 @login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Librarians')
-def Librarian(request):
+@user_passes_test(is_librarian)
+def librarian_dashboard(request):
+    """
+    Librarian dashboard view - accessible only to users with Librarian role
+    """
     context = {
         'title': 'Librarian Dashboard',
-        'books': Book.objects.all()  # Assuming you have a Book model
-        # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
+        'books': Book.objects.all(),
+        # 'pending_requests': BookRequest.objects.filter(status='PENDING'),
     }
     return render(request, 'librarian_view.html', context)
 
 @login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Member')
-def Member(request):
+@user_passes_test(is_member)
+def member_dashboard(request):
+    """
+    Member dashboard view - accessible only to users with Member role
+    """
     context = {
         # 'title': 'Member Dashboard',
         # 'borrowed_books': Book.objects.filter(borrower=request.user),
         # 'reading_history': ReadingHistory.objects.filter(user=request.user),
     }
     return render(request, 'member_dashboard.html', context)
-
