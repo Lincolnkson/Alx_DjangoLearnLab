@@ -77,3 +77,31 @@ class register(FormView):
         def form_valid(self, form):
             form.save()
             return super().form_valid(form)
+        
+"""
+Step 2: Set Up Role-Based Views
+Create three separate views to manage content access based on user roles:
+
+Views to Implement:
+
+An ‘Admin’ view that only users with the ‘Admin’ role can access, the name of the file should be admin_view
+A ‘Librarian’ view accessible only to users identified as ‘Librarians’. The file should be named librarian_view
+A ‘Member’ view for users with the ‘Member’ role, the name of the file should be member_view
+Access Control:
+
+Utilize the @user_passes_test decorator to check the user’s role before granting access to each view.
+"""
+from django.contrib.auth.decorators import user_passes_test
+
+@user_passes_test(lambda u: u.userprofile.role == 'Admin')
+def admin_view(request):
+    return render(request, 'relationship_app/admin_view.html')
+
+@user_passes_test(lambda u: u.userprofile.role == 'Librarian')
+def librarian_view(request):
+    return render(request, 'relationship_app/librarian_view.html')
+
+@user_passes_test(lambda u: u.userprofile.role == 'Member')
+def member_view(request):
+    return render(request, 'relationship_app/member_view.html')
+

@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import list_books,LibraryDetailView, login_view, logout_view, register
+from .views import list_books,LibraryDetailView, login_view, logout_view, register, AdminView, LibrarianView, MemberView
  #["from .views import list_books", "LibraryDetailView"]
 """
 ["views.register", "LogoutView.as_view(template_name=", "LoginView.as_view(template_name="]
@@ -9,6 +9,21 @@ urlpatterns = [
           path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_book_list'),
           path('login/', login_view),
           path('logout/', logout_view, name='logout'),
-          path('register/', register, name='register'),
+          path('register/', register.as_view(), name='register'),
+
+          path('admin/', AdminView.as_view(), name='admin'),
+          path('librarian/', LibrarianView.as_view(), name='librarian'),
+          path('member/', MemberView.as_view(), name='member'),
+          path('library/<int:pk>/', LibraryDetailView.as_view(), name='library_book_list'),
 ]
 
+
+"""
+Step 3: Configure URL Patterns
+Define URL patterns that will route to the newly created role-specific views. Ensure that each URL is correctly linked to its respective view and that the URLs are named for easy reference.
+
+URLs to Define:
+A URL for the ‘Admin’ view.
+A URL for the ‘Librarian’ view.
+A URL for the ‘Member’ view.
+"""
