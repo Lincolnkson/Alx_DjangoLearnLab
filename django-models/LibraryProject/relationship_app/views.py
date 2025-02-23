@@ -7,12 +7,12 @@ from .models import Library
 
 
 # LibraryProject/relationship_app/views.py doesn't contain: ["relationship_app/list_books.html"]
-def book_list(request):
+def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
 
-class LibraryBookListView(ListView):
+class LibraryDetailView(ListView):
           model = Book
           template_name = 'relationship_app/library_detail.html'
           context_object_name = 'books'
