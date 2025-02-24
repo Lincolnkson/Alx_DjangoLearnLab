@@ -95,34 +95,18 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
-#@login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Admin')
+@login_required
+@user_passes_test(lambda u: u.get_group_permissions('Admin')or u.is_superuser)
 def Admin(request):
-    context = {
-        # 'title': 'Admin Dashboard',
-        # 'user_count': User.objects.count(),
-        # 'librarian_count': UserProfile.objects.filter(role='LIBRARIAN').count(),
-        # 'member_count': UserProfile.objects.filter(role='MEMBER').count(),
-    }
-    return render(request, 'admin.html', context)
+    return render(request, 'relationship_app/admin.html')
 
-#@login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Librarians')
+@login_required
+@user_passes_test(lambda u: u.get_group_permissions('Librarians')or u.is_superuser)
 def Librarian(request):
-    context = {
-        # 'title': 'Librarian Dashboard',
-        # 'books': Book.objects.all()  # Assuming you have a Book model
-        # # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
-    }
-    return render(request, 'relationship_app/librarian.html', context)
+    return render(request, 'relationship_app/librarian.html')
 
-#@login_required
-@user_passes_test(lambda u: u.userprofile.role == 'Member')
+@login_required
+@user_passes_test(lambda u: u.get_group_permissions('Member')or u.is_superuser)
 def Member(request):
-    context = {
-        # 'title': 'Member Dashboard',
-        # 'borrowed_books': Book.objects.filter(borrower=request.user),
-        # 'reading_history': ReadingHistory.objects.filter(user=request.user),
-    }
-    return render(request, 'relationship_app/member.html', context)
+    return render(request, 'relationship_app/member.html')
 
