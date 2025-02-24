@@ -104,17 +104,17 @@ def Admin(request):
         # 'librarian_count': UserProfile.objects.filter(role='LIBRARIAN').count(),
         # 'member_count': UserProfile.objects.filter(role='MEMBER').count(),
     }
-    return render(request, 'admin_dashboard.html', context)
+    return render(request, 'admin.html', context)
 
 #@login_required
 @user_passes_test(lambda u: u.userprofile.role == 'Librarians')
 def Librarian(request):
     context = {
-        'title': 'Librarian Dashboard',
-        'books': Book.objects.all()  # Assuming you have a Book model
-        # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
+        # 'title': 'Librarian Dashboard',
+        # 'books': Book.objects.all()  # Assuming you have a Book model
+        # # 'pending_requests': BookRequest.objects.filter(status='PENDING'),  # Assuming you have a BookRequest model
     }
-    return render(request, 'librarian_view.html', context)
+    return render(request, 'relationship_app/librarian.html', context)
 
 #@login_required
 @user_passes_test(lambda u: u.userprofile.role == 'Member')
@@ -124,5 +124,5 @@ def Member(request):
         # 'borrowed_books': Book.objects.filter(borrower=request.user),
         # 'reading_history': ReadingHistory.objects.filter(user=request.user),
     }
-    return render(request, 'member_dashboard.html', context)
+    return render(request, 'relationship_app/member.html', context)
 
