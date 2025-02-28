@@ -110,21 +110,21 @@ def is_member(User):
 
 # Admin View
 # @login_required
-@user_passes_test((User.userprofile.role == UserProfile.Admin) ==True)
+@user_passes_test(is_admin)
 def admin_view(request):
-    return render(request, 'relationship_app/Admin.html')
+    return render(request, 'relationship_app/admin_view.html')
 
 # Librarian View
 @login_required
 @user_passes_test(is_librarian)
 def librarian_view(request):
-    return render(request, 'relationship_app/Librarian.html')
+    return render(request, 'relationship_app/librarian_view.html')
 
 # Member View
 @login_required
 @user_passes_test(is_member)
 def member_view(request):
-    return render(request, 'relationship_app/Member.html')
+    return render(request, 'relationship_app/member_view.html')
 
 
 
