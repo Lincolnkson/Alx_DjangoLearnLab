@@ -95,18 +95,65 @@ Utilize the @user_passes_test decorator to check the user’s role before granti
 """
 
 
-# @login_required
-@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[0].role))
-def Admin(request):
-    return render(request, 'relationship_app/admin.html')
 
-# @login_required
-@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[1].role))
-def Librarian(request):
-    return render(request, 'relationship_app/librarian.html')
+# Check if the user is an Admin
+def is_admin(user):
+    return user.userprofile.role == UserProfile.ADMIN
 
+# View for Admin
+@login_required
+@user_passes_test(is_admin)
+def librarian_view(request):
+    return render(request, 'relationship_app/Admin.html')
+
+# Check if the user is a Librarian
+def is_librarian(user):
+    return user.userprofile.role == UserProfile.LIBRARIAN
+
+
+# # Check if the user is a Librarian
+# def is_librarian(user):
+#     return user.userprofile.role == UserProfile.Adm
+
+# # Check if the user is a Librarian
+# def is_librarian(user):
+#     return user.userprofile.role == UserProfile.Librarians
+
+# # View for Librarians
 # @login_required
-@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[2].role))
-def Member(request):
-    return render(request, 'relationship_app/member.html')
+# @user_passes_test(is_librarian)
+# def librarian_view(request):
+#     return render(request, 'relationship_app/librarian_view.html')
+
+# # Check if the user is a Member
+# def is_member(user):
+#     return user.userprofile.role == UserProfile.Members
+
+
+
+
+
+# # View for Members
+
+# # @login_required
+# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[0].role))
+
+# def Admin(request):
+#     return render(request, 'relationship_app/admin.html')
+# @user_passes_test(is_member)
+# def Admin(request):
+#     return render(request, 'relationship_app/admin.html')
+
+
+
+
+# # @login_required
+# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[1].role))
+# def Librarian(request):
+#     return render(request, 'relationship_app/librarian.html')
+
+# # @login_required
+# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[2].role))
+# def Member(request):
+#     return render(request, 'relationship_app/member.html')
 
