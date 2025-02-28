@@ -49,6 +49,11 @@ from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 class UserProfile(models.Model):
+    #Define the choices for the role field
+    ADMIN = 'Admin'
+    LIBRARIAN = 'Librarian'
+    MEMBER = 'Member'
+    
     ROLE_CHOICES = [
         ('ADMIN', 'Admin'),
         ('LIBRARIAN', 'Librarian'),
