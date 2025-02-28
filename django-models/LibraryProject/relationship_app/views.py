@@ -34,8 +34,6 @@ class LibraryDetailView(ListView):
                    
 
 
-
-
 def login_view(request):
     if request.user.is_authenticated:
         return redirect('home')  # Redirect if user is already logged in
@@ -80,20 +78,6 @@ class register(FormView):
             form.save()
             return super().form_valid(form)
         
-"""
-Step 2: Set Up Role-Based Views
-Create three separate views to manage content access based on user roles:
-
-Views to Implement:
-
-An ‘Admin’ view that only users with the ‘Admin’ role can access, the name of the file should be admin_view
-A ‘Librarian’ view accessible only to users identified as ‘Librarians’. The file should be named librarian_view
-A ‘Member’ view for users with the ‘Member’ role, the name of the file should be member_view
-Access Control:
-
-Utilize the @user_passes_test decorator to check the user’s role before granting access to each view.
-"""
-
 
 
 # Check if the user is an Admin
@@ -125,53 +109,3 @@ def librarian_view(request):
 @user_passes_test(is_member)
 def member_view(request):
     return render(request, 'relationship_app/member_view.html')
-
-
-
-
-# # Check if the user is a Librarian
-# def is_librarian(user):
-#     return user.userprofile.role == UserProfile.Adm
-
-# # Check if the user is a Librarian
-# def is_librarian(user):
-#     return user.userprofile.role == UserProfile.Librarians
-
-# # View for Librarians
-# @login_required
-# @user_passes_test(is_librarian)
-# def librarian_view(request):
-#     return render(request, 'relationship_app/librarian_view.html')
-
-# # Check if the user is a Member
-# def is_member(user):
-#     return user.userprofile.role == UserProfile.Members
-
-
-
-
-
-# # View for Members
-
-# # @login_required
-# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[0].role))
-
-# def Admin(request):
-#     return render(request, 'relationship_app/admin.html')
-# @user_passes_test(is_member)
-# def Admin(request):
-#     return render(request, 'relationship_app/admin.html')
-
-
-
-
-# # @login_required
-# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[1].role))
-# def Librarian(request):
-#     return render(request, 'relationship_app/librarian.html')
-
-# # @login_required
-# @user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[2].role))
-# def Member(request):
-#     return render(request, 'relationship_app/member.html')
-
