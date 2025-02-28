@@ -110,7 +110,7 @@ def is_member(User):
 
 # Admin View
 # @login_required
-@user_passes_test(User.userprofile.role == UserProfile.Admin)
+@user_passes_test((User.userprofile.role == UserProfile.Admin) ==True)
 def admin_view(request):
     return render(request, 'relationship_app/Admin.html')
 
