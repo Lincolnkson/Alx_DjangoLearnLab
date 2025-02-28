@@ -17,6 +17,8 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .models import UserProfile
+from django.contrib.auth.models import User
 
 # LibraryProject/relationship_app/views.py doesn't contain: ["relationship_app/list_books.html"]
 def list_books(request):
@@ -93,19 +95,18 @@ Utilize the @user_passes_test decorator to check the user’s role before granti
 """
 
 
-
 # @login_required
-@user_passes_test(lambda u: u.get_group_permissions('Admin'))
+@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[0].role))
 def Admin(request):
     return render(request, 'relationship_app/admin.html')
 
 # @login_required
-@user_passes_test(lambda u: u.get_group_permissions('Librarians'))
+@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[1].role))
 def Librarian(request):
     return render(request, 'relationship_app/librarian.html')
 
 # @login_required
-@user_passes_test(lambda u: u.get_group_permissions('Member'))
+@user_passes_test(lambda u: u.get_group_permissions(UserProfile.ROLE_CHOICES[2].role))
 def Member(request):
     return render(request, 'relationship_app/member.html')
 
