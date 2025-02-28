@@ -97,23 +97,23 @@ Utilize the @user_passes_test decorator to check the user’s role before granti
 
 
 # Check if the user is an Admin
-def is_admin(user):
-    return user.userprofile.role == UserProfile.ADMIN
+def Admin(user):
+    return user.userprofile.role == UserProfile.Admin
 
 # Admin View
 @login_required
-@user_passes_test(is_admin)
+@user_passes_test(Admin)
 def Admin_view(request):
     return render(request, 'relationship_app/Admin.html')
 
 
 # Check if the user is a Librarian
 def is_librarian(user):
-    return user.userprofile.role == UserProfile.LIBRARIAN
+    return user.userprofile.role == UserProfile.Librarian
 
 # Check if the user is a Member
 def is_member(user):
-    return user.userprofile.role == UserProfile.MEMBER
+    return user.userprofile.role == UserProfile.Member
 
 
 # Librarian View

@@ -50,10 +50,10 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 class UserProfile(models.Model):
     #Define the choices for the role field
-    ADMIN = 'Admin'
-    LIBRARIAN = 'Librarian'
-    MEMBER = 'Member'
-    
+    Admin = 'Admin'
+    Librarian = 'Librarian'
+    Member = 'Member'
+
     ROLE_CHOICES = [
         ('ADMIN', 'Admin'),
         ('LIBRARIAN', 'Librarian'),
