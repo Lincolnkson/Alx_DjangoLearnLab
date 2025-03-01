@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser,BaseUserManager
-
+from django.contrib.auth.models import Permission
 class Book(models.Model):
           title = models.CharField(max_length=200)
           author = models.CharField(max_length=100)
@@ -74,25 +74,40 @@ Assign appropriate permissions to each group. For example, Editors might have ca
 """
 class Editors(models.Model):
     name = models.CharField(max_length=100)
-    permissions = models.ManyToManyField(codename='can_edit')
+    permissions = models.ManyToManyField(Permission)  # Link to the Permission model
     users = models.ManyToManyField(CustomUser)
-
+    
     def __str__(self):
         return self.name
+    
+    class Meta:
+        permissions = [
+            ("can_edit", "Can edit books and publications"),
+        ]
 
 class Viewers(models.Model):
     name = models.CharField(max_length=100)
-    permissions = models.ManyToManyField(codename='can_view')
+    permissions = models.ManyToManyField(Permission)  # Link to the Permission model
     users = models.ManyToManyField(CustomUser)
-
+    
     def __str__(self):
         return self.name
+    
+    class Meta:
+        permissions = [
+            ("can_view", "Can view books and publications"),
+        ]
 
 class Admins(models.Model):
-     name = models.CharField(max_length=100)
-     permissions = models.ManyToManyField(codename='can_create')
-     users = models.ManyToManyField(CustomUser)
-
-     def __str__(self):
-          return self.name
+    name = models.CharField(max_length=100)
+    permissions = models.ManyToManyField(Permission)  # Link to the Permission model
+    users = models.ManyToManyField(CustomUser)
+    
+    def __str__(self):
+        return self.name
+    
+    class Meta:
+        permissions = [
+            ("can_create", "Can create books and publications"),
+        ]
     
