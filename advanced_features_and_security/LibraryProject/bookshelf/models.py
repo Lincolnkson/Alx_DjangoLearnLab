@@ -64,3 +64,35 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+"""
+Groups to Setup:
+Create groups like Editors, Viewers, and Admins.
+Assign appropriate permissions to each group. For example, Editors might have can_edit and can_create permission
+
+"""
+class Editors(models.Model):
+    name = models.CharField(max_length=100)
+    permissions = models.ManyToManyField(codename='can_edit')
+    users = models.ManyToManyField(CustomUser)
+
+    def __str__(self):
+        return self.name
+
+class Viewers(models.Model):
+    name = models.CharField(max_length=100)
+    permissions = models.ManyToManyField(codename='can_view')
+    users = models.ManyToManyField(CustomUser)
+
+    def __str__(self):
+        return self.name
+
+class Admins(models.Model):
+     name = models.CharField(max_length=100)
+     permissions = models.ManyToManyField(codename='can_create')
+     users = models.ManyToManyField(CustomUser)
+
+     def __str__(self):
+          return self.name
+    
