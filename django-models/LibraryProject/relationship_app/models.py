@@ -13,7 +13,7 @@ class Book(models.Model):
     author = models.ForeignKey(Author, related_name="books", on_delete=models.CASCADE)
 
     class Meta:
-        perms =[
+        permissions =[
             "can_add_book",
             "can_change_book",
             "can_delete_book"
