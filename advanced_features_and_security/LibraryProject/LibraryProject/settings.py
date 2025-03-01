@@ -127,3 +127,29 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'bookshelf.CustomUser'
+
+
+# SECURITY SETTINGS
+
+# Turn off debug mode in production
+DEBUG = False  # Set to True only in development environments
+
+# CSRF and Session Security
+CSRF_COOKIE_SECURE = True  # Cookies only sent over HTTPS
+SESSION_COOKIE_SECURE = True  # Session cookies only sent over HTTPS
+CSRF_COOKIE_HTTPONLY = True  # Prevents JavaScript from accessing CSRF cookie
+SESSION_COOKIE_HTTPONLY = True  # Prevents JavaScript from accessing session cookie
+
+# Browser Security Headers
+SECURE_BROWSER_XSS_FILTER = True  # Enables XSS filtering in most browsers
+X_FRAME_OPTIONS = 'DENY'  # Prevents your site from being framed (clickjacking protection)
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevents browsers from MIME-sniffing content type
+
+# HTTPS Settings
+SECURE_SSL_REDIRECT = True  # Redirects HTTP requests to HTTPS
+SECURE_HSTS_SECONDS = 31536000  # 1 year - Forces HTTPS in browser
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Applies HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allows site to be included in browser HSTS preload list
+
+# Set allowed hosts to prevent HTTP Host header attacks
+ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']

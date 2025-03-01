@@ -16,7 +16,12 @@ LibraryProject/bookshelf/views.py doesn't contain: ["book_list", "raise_exceptio
 @permission_required('bookshelf.can_view', raise_exception=True)
 def view_books(request):
     books = Book.objects.all()
-    return render(request, 'view_books.html', {'books': books})
+    
+    query = request.GET.get('q', '')
+    # SAFE: ORM filters automatically sanitize inputs
+    results = books.objects.filter(title__icontains=query)
+    
+    return render(request, 'bookshelf/book_list.html', {'books': results})
 
 @permission_required('bookshelf.can_create', raise_exception=True)
 def create_book(request):
@@ -26,4 +31,4 @@ def create_book(request):
         publication_year = request.POST.get('publication_year')
         Book.objects.create(title=title, author=author, publication_year=publication_year)
         return HttpResponse("Book created successfully")
-    return render(request, 'create_book.html')
+    return render(request, 'bookshelf/form_example.html')
