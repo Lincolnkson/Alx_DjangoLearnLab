@@ -19,12 +19,57 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import UserProfile
 from django.contrib.auth.models import User
-
+from django.contrib.auth.decorators import permission_required
 # LibraryProject/relationship_app/views.py doesn't contain: ["relationship_app/list_books.html"]
+
+#create, update, or delete
+def has_perms(*perms):
+    def _has_perms(user):
+        return all(user.has_perm(perm) for perm in perms)
+    return _has_perms
+
+#create view for adding book
+@permission_required('relationship_app.add_book', raise_exception=True)
+def add_book(request):
+    if request.method == 'POST':
+        title = request.POST['title']
+        author = request.POST['author']
+        library = request.POST['library']
+        book = Book(title=title, author=author, library=library)
+        book.save()
+        return redirect('list_books')
+    return render(request, 'relationship_app/add_book.html')
+
+#create view for updating book
+@permission_required('relationship_app.change_book', raise_exception=True)
+def update_book(request, id):
+        book = Book.objects.get(id=id)
+        if request.method == 'POST':
+            title = request.POST['title']
+            author = request.POST['author']
+            library = request.POST['library']
+            book.title = title
+            book.author = author
+            book.library = library
+            book.save()
+            return redirect('list_books')
+        return render(request, 'relationship_app/update_book.html', {'book': book})
+
+#create view for deleting book
+@permission_required('relationship_app.delete_book', raise_exception=True)
+def delete_book(request, id):
+    book = Book.objects.get(id=id)
+    book.delete()
+    return redirect('list_books')
+
+
+@user_passes_test(User.has_perms('can_add_book', 'can_change_book', 'can_delete_book'))
+@login_required
 def list_books(request):
     books = Book.objects.all()
     return render(request, 'relationship_app/list_books.html', {'books': books})
 
+@permission_required([Book.can_add_book, Book.can_change_book, Book.can_delete_book], raise_exception=True)
 class LibraryDetailView(ListView):
           model = Book
           template_name = 'relationship_app/library_detail.html'

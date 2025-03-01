@@ -12,6 +12,12 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.ForeignKey(Author, related_name="books", on_delete=models.CASCADE)
 
+    class Meta:
+        perms =[
+            "can_add_book",
+            "can_change_book",
+            "can_delete_book"
+        ]
     def __str__(self):
         return self.name
 
