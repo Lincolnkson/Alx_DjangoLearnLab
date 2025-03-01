@@ -19,12 +19,11 @@ from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import UserProfile
 from django.contrib.auth.models import User
-from .models import CustomUser
+from bookshelf.models import CustomUser
 from django.contrib.auth.decorators import permission_required
 # LibraryProject/relationship_app/views.py doesn't contain: ["relationship_app/list_books.html"]
 
 #["relationship_app.can_add_book", "relationship_app.can_change_book", "relationship_app.can_delete_book"]
-
 
 #create view for adding book
 @login_required
