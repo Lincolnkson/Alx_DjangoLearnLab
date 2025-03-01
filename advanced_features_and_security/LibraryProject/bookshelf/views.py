@@ -4,15 +4,6 @@ from django.http import HttpResponse
 from .models import Book
 from .forms import ExampleForm
 # Create your views here.
-"""
-Modify your views to check for these permissions before allowing users to perform certain actions. Use decorators such as permission_required to enforce these permissions in your views.
-
-Views to Modify or Create:
-Ensure views that create, edit, or delete model instances check for the correct permissions.
-Example: Use @permission_required('app_name.can_edit', raise_exception=True) to protect an edit view.
-
-LibraryProject/bookshelf/views.py doesn't contain: ["book_list", "raise_exception", "books"]
-"""
 
 @permission_required('bookshelf.can_view', raise_exception=True)
 def view_books(request):

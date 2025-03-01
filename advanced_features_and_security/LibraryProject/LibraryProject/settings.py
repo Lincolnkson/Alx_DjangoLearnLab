@@ -153,3 +153,6 @@ SECURE_HSTS_PRELOAD = True  # Allows site to be included in browser HSTS preload
 
 # Set allowed hosts to prevent HTTP Host header attacks
 ALLOWED_HOSTS = ['yourdomain.com', 'www.yourdomain.com']
+
+# Trust the X-Forwarded-Proto header from your proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
