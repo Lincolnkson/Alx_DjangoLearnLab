@@ -22,13 +22,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import permission_required
 # LibraryProject/relationship_app/views.py doesn't contain: ["relationship_app/list_books.html"]
 
-#create, update, or delete
-def has_perms(*perms):
-    def _has_perms(user):
-        return all(user.has_perm(perm) for perm in perms)
-    return _has_perms
+#["relationship_app.can_add_book", "relationship_app.can_change_book", "relationship_app.can_delete_book"]
+
 
 #create view for adding book
+@login_required
 @permission_required('relationship_app.add_book', raise_exception=True)
 def add_book(request):
     if request.method == 'POST':
@@ -41,6 +39,7 @@ def add_book(request):
     return render(request, 'relationship_app/add_book.html')
 
 #create view for updating book
+@login_required
 @permission_required('relationship_app.change_book', raise_exception=True)
 def update_book(request, id):
         book = Book.objects.get(id=id)
@@ -56,6 +55,7 @@ def update_book(request, id):
         return render(request, 'relationship_app/update_book.html', {'book': book})
 
 #create view for deleting book
+@login_required
 @permission_required('relationship_app.delete_book', raise_exception=True)
 def delete_book(request, id):
     book = Book.objects.get(id=id)
