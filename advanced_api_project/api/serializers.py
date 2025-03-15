@@ -1,6 +1,10 @@
 import datetime
 from rest_framework import serializers
-from .models import Book, Author
+from advanced_api_project.api.models import Book, Author
+from datetime import datetime
+
+
+
 
 """
 The puspose of the BookSerializer is to serialize all fields of the Book model.
@@ -14,12 +18,10 @@ class BookSerializer(serializers.ModelSerializer):
           
           #Adding custom validation to the BookSerializer to ensure the publication_year is not in the future.
           def validate(self, data):
-                    
-
                     if data["publication_year"] > datetime.now().year:
                               raise serializers.ValidationError("The publication_year can not be a future year")
                     return data
-
+          
           def __str__(self):
                   return super().__str__()
 
