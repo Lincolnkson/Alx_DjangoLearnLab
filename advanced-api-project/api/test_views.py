@@ -58,7 +58,7 @@ class BookAPITestCase(TestCase):
         # Book data for testing creation
         self.new_book_data = {
             'title': 'Test Book',
-            'author': self.author1.id,  # Using author ID instead of string
+            'author': self.author1.id,
             'publication_year': 2023
         }
 
@@ -78,7 +78,9 @@ class BookAPITestCase(TestCase):
         """
         Test that authenticated users can access the book list endpoint
         """
-        self.client.force_authenticate(user=self.user1)
+        login_successful = self.client.login(username='testuser1', password='testpass123')
+        self.assertTrue(login_successful)
+        
         response = self.client.get(reverse('book-list'))
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -98,13 +100,10 @@ class BookAPITestCase(TestCase):
         """
         Test filtering books by author name
         """
-        # Since author is now a ForeignKey, we need to test filtering differently
-        # Assuming the view is set up to filter based on author's name with author__name__icontains
         response = self.client.get(reverse('book-list') + '?author=Martin')
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-        # The response should contain the book with author 'Robert C. Martin'
         self.assertEqual(response.data[0]['title'], 'Clean Code')
 
     def test_book_list_filter_by_year(self):
@@ -158,7 +157,9 @@ class BookAPITestCase(TestCase):
         """
         Test creating a book as an authenticated user
         """
-        self.client.force_authenticate(user=self.user1)
+        login_successful = self.client.login(username='testuser1', password='testpass123')
+        self.assertTrue(login_successful)
+        
         response = self.client.post(
             reverse('book-create'),
             data=json.dumps(self.new_book_data),
@@ -182,16 +183,18 @@ class BookAPITestCase(TestCase):
         )
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(Book.objects.count(), 3)  # No new book should be created
+        self.assertEqual(Book.objects.count(), 3)
 
     def test_book_update_authenticated(self):
         """
         Test updating a book as an authenticated user
         """
-        self.client.force_authenticate(user=self.user1)
+        login_successful = self.client.login(username='testuser1', password='testpass123')
+        self.assertTrue(login_successful)
+        
         update_data = {
             'title': 'Updated Book Title',
-            'author': self.author2.id,  # Changed author
+            'author': self.author2.id,
             'publication_year': 2024
         }
         
@@ -219,7 +222,7 @@ class BookAPITestCase(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.book1.refresh_from_db()
         self.assertEqual(self.book1.title, 'Partially Updated Title')
-        self.assertEqual(self.book1.author.id, self.author2.id)  # Unchanged from previous update
+        self.assertEqual(self.book1.author.id, self.author2.id)
 
     def test_book_update_unauthenticated(self):
         """
@@ -234,18 +237,19 @@ class BookAPITestCase(TestCase):
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.book1.refresh_from_db()
-        self.assertEqual(self.book1.title, 'Django for Beginners')  # Unchanged
+        self.assertEqual(self.book1.title, 'Django for Beginners')
 
     def test_book_delete_authenticated(self):
         """
         Test deleting a book as an authenticated user
         """
-        self.client.force_authenticate(user=self.user1)
+        login_successful = self.client.login(username='testuser1', password='testpass123')
+        self.assertTrue(login_successful)
+        
         response = self.client.delete(reverse('book-delete', kwargs={'pk': self.book1.pk}))
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 2)
-        # Verify the book was actually deleted
         with self.assertRaises(Book.DoesNotExist):
             Book.objects.get(pk=self.book1.pk)
 
@@ -256,4 +260,4 @@ class BookAPITestCase(TestCase):
         response = self.client.delete(reverse('book-delete', kwargs={'pk': self.book1.pk}))
         
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
-        self.assertEqual(Book.objects.count(), 3)  # No book should be deleted
+        self.assertEqual(Book.objects.count(), 3)
