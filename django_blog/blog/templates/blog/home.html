@@ -1,0 +1,13 @@
+{% extends "blog/base.html" %} {% load static %} {% block title %}Welcome to
+Django Blog{% endblock %} {% block content %}
+<div class="hero">
+  <h1>Welcome to Django Blog</h1>
+  <p>A place to share your thoughts and ideas.</p>
+  <a href="{% url 'posts' %}" class="btn btn-primary">Browse Posts</a>
+  {% if user.is_authenticated %}
+  <a href="{% url 'post-create' %}" class="btn btn-success">Create New Post</a>
+  {% else %}
+  <a href="{% url 'login' %}" class="btn btn-info">Login to Create Posts</a>
+  {% endif %}
+</div>
+{% endblock %}
