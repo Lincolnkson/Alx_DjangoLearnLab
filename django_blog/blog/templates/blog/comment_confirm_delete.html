@@ -1,0 +1,16 @@
+{% extends "blog/base.html" %} {% load static %} {% block title %}Delete
+Comment{% endblock %} {% block content %}
+<div class="form-container">
+  <h1>Delete Comment</h1>
+  <p>Are you sure you want to delete your comment?</p>
+  <form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Delete</button>
+    <a
+      href="{% url 'post-detail' object.post.id %}"
+      class="btn btn-outline-secondary"
+      >Cancel</a
+    >
+  </form>
+</div>
+{% endblock %}

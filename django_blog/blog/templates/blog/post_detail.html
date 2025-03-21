@@ -1,30 +1,53 @@
-{% extends "blog/base.html" %} {% load static %} {% block title %}{{
-object.title }}{% endblock %} {% block content %}
-<div class="post-detail-container">
-  <article class="post-detail">
-    <h1>{{ object.title }}</h1>
-    <div class="post-meta">
-      <p>
-        By {{ object.author.username }} | {{ object.published_date|date:"F d, Y"
-        }}
-      </p>
-    </div>
-    <div class="post-content">{{ object.content|linebreaks }}</div>
+{% extends "blog/base.html" %} {% load static %} {% block content %}
+<div class="post-detail">
+  <h1>{{ post.title }}</h1>
+  <p class="post-meta">
+    By {{ post.author }} on {{ post.created_at|date:"F d, Y" }}
+  </p>
+  <div class="post-content">{{ post.content|safe }}</div>
 
-    {% if user == object.author %}
-    <div class="post-actions">
-      <a href="{% url 'post-update' object.pk %}" class="btn btn-warning"
-        >Edit</a
-      >
-      <a href="{% url 'post-delete' object.pk %}" class="btn btn-danger"
-        >Delete</a
-      >
+  <!-- Comments Section -->
+  <div class="comments-section mt-5">
+    <h3>Comments ({{ comments.count }})</h3>
+
+    {% if user.is_authenticated %}
+    <div class="comment-form mb-4">
+      <form method="POST" action="{% url 'add-comment' post.id %}">
+        {% csrf_token %} {{ comment_form.as_p }}
+        <button type="submit" class="btn btn-primary">Post Comment</button>
+      </form>
     </div>
+    {% else %}
+    <p>Please <a href="{% url 'login' %}">login</a> to post a comment.</p>
     {% endif %}
 
-    <div class="back-link">
-      <a href="{% url 'posts' %}" class="btn btn-primary">Back to Posts</a>
+    <div class="comments-list">
+      {% for comment in comments %}
+      <div class="comment mb-3 p-3 border rounded">
+        <div class="comment-header d-flex justify-content-between">
+          <strong>{{ comment.author.username }}</strong>
+          <small>{{ comment.created_at|date:"F d, Y" }}</small>
+        </div>
+        <div class="comment-content mt-2">{{ comment.content }}</div>
+        {% if user == comment.author %}
+        <div class="comment-actions mt-2">
+          <a
+            href="{% url 'update-comment' comment.id %}"
+            class="btn btn-sm btn-outline-secondary"
+            >Edit</a
+          >
+          <a
+            href="{% url 'delete-comment' comment.id %}"
+            class="btn btn-sm btn-outline-danger"
+            >Delete</a
+          >
+        </div>
+        {% endif %}
+      </div>
+      {% empty %}
+      <p>No comments yet. Be the first to comment!</p>
+      {% endfor %}
     </div>
-  </article>
+  </div>
 </div>
 {% endblock %}

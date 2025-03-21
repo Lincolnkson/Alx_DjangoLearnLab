@@ -1,0 +1,21 @@
+{% extends "blog/base.html" %} {% load static %} {% block title %}Edit Comment{%
+endblock %} {% block content %}
+<div class="form-container">
+  <h1>Edit Comment</h1>
+  <form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      {{ form.content.label_tag }} {{ form.content }} {% if form.content.errors
+      %}
+      <div class="form-error">{{ form.content.errors }}</div>
+      {% endif %}
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+    <a
+      href="{% url 'post-detail' object.post.id %}"
+      class="btn btn-outline-secondary"
+      >Cancel</a
+    >
+  </form>
+</div>
+{% endblock %}

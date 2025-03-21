@@ -1,5 +1,6 @@
-{% extends "blog/base.html" %} {% load static %} {% block title %}{% if object
-%}Edit Post{% else %}Create Post{% endif %}{% endblock %} {% block content %}
+{% extends "blog/base.html" %} {% load static %} {% block title %} {% if
+object%}Edit Post{% else %}Create Post{% endif %}{% endblock %} {% block content
+%}
 <div class="form-container">
   <h1>{% if object %}Edit Post{% else %}Create New Post{% endif %}</h1>
   <form method="POST">
