@@ -1,0 +1,87 @@
+{% extends "blog/base.html" %} {% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h1 class="mb-4">Search Results</h1>
+
+    <!-- Search form at top of results -->
+    <form method="GET" action="{% url 'search-posts' %}" class="mb-4">
+      <div class="input-group">
+        <input
+          type="text"
+          name="q"
+          value="{{ query }}"
+          class="form-control"
+          placeholder="Search posts..."
+        />
+        <div class="input-group-append">
+          <button class="btn btn-outline-secondary" type="submit">
+            Search
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Search statistics -->
+    <div class="mb-3">
+      {% if query or tag %}
+      <p>
+        {% if query %}Searching for: <strong>"{{ query }}"</strong>{% endif %}
+        {% if tag %}{% if query %} in {% endif %}Tag:
+        <span class="badge badge-info">{{ tag }}</span>{% endif %}
+      </p>
+      <p>Found {{ posts.count }} result{{ posts.count|pluralize }}</p>
+      {% endif %}
+    </div>
+
+    <!-- Posts list -->
+    {% if posts %} {% for post in posts %}
+    <div class="card mb-4">
+      <div class="card-body">
+        <h2 class="card-title">{{ post.title }}</h2>
+        <p class="card-text text-muted">
+          By {{ post.author.username }} on {{ post.published_date|date:"F d, Y"
+          }}
+        </p>
+        <div class="mb-2">
+          {% for tag in post.tags.all %}
+          <a
+            href="{% url 'search-posts' %}?tag={{ tag.slug }}"
+            class="badge badge-secondary"
+            >{{ tag.name }}</a
+          >
+          {% endfor %}
+        </div>
+        <p class="card-text">{{ post.content|truncatewords:50 }}</p>
+        <a href="{% url 'post-detail' post.id %}" class="btn btn-primary"
+          >Read More &rarr;</a
+        >
+      </div>
+    </div>
+    {% endfor %} {% else %}
+    <div class="alert alert-info">
+      No posts found matching your search criteria.
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Sidebar -->
+  <div class="col-md-4">
+    <!-- Tags sidebar -->
+    <div class="card mb-4">
+      <div class="card-header">Filter by Tag</div>
+      <div class="card-body">
+        {% for tag in all_tags %}
+        <a
+          href="{% url 'search-posts' %}?tag={{ tag.slug }}{% if query %}&q={{ query }}{% endif %}"
+          class="badge {% if tag.slug == tag %}badge-primary{% else %}badge-secondary{% endif %} mr-1 mb-1"
+        >
+          {{ tag.name }}
+        </a>
+        {% empty %}
+        <p class="text-muted">No tags available</p>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

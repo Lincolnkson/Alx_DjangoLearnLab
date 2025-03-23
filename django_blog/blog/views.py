@@ -5,9 +5,10 @@ from django.urls import reverse_lazy
 from .forms import CustomUserCreationForm, UserUpdateForm
 from django.shortcuts import render
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.views.generic import ListView,DetailView,CreateView,UpdateView,DeleteView
-from .models import Post, Comment
-from .forms import PostForm,CommentForm
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from .models import Post, Comment, Tag
+from .forms import PostForm, CommentForm
+from django.db.models import Q
 
 
 def register(request):
@@ -21,6 +22,7 @@ def register(request):
     else:
         form = CustomUserCreationForm()
     return render(request, 'blog/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -39,16 +41,44 @@ def profile(request):
     
     return render(request, 'blog/profile.html', context)
 
+
 class PostListView(ListView):
     model = Post
     template_name = 'blog/post_list.html'
     context_object_name = 'posts'
     ordering = ['-published_date']
     paginate_by = 5
+    
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        # Get the search query from URL parameters
+        query = self.request.GET.get('q')
+        tag_slug = self.request.GET.get('tag')
+        
+        if tag_slug:
+            # Filter by tag if tag parameter is provided
+            queryset = queryset.filter(tags__slug=tag_slug).distinct()
+            
+        if query:
+            # Filter by title, content, author username, or tag name
+            queryset = queryset.filter(
+                Q(title__icontains=query) |
+                Q(content__icontains=query) |
+                Q(author__username__icontains=query) |
+                Q(tags__name__icontains=query)
+            ).distinct()
+            
+        return queryset.order_by('-published_date')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Add search query to context to maintain in pagination links
+        context['query'] = self.request.GET.get('q', '')
+        context['tag'] = self.request.GET.get('tag', '')
+        # Add all tags for sidebar filtering
+        context['all_tags'] = Tag.objects.all()
+        return context
 
-class PostDetailView(DetailView):
-    model = Post
-    template_name = 'blog/post_detail.html'
 
 class PostDetailView(DetailView):
     model = Post
@@ -60,7 +90,8 @@ class PostDetailView(DetailView):
         context['comments'] = self.object.comments.all()
         context['comment_form'] = CommentForm()
         return context
-    
+
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
     form_class = PostForm
@@ -69,6 +100,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.author = self.request.user
         return super().form_valid(form)
+
 
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
@@ -85,6 +117,7 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
+
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post
     template_name = 'blog/post_confirm_delete.html'
@@ -96,9 +129,40 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+
 # Homepage view
 def home(request):
     return render(request, 'blog/home.html', {'title': 'Home'})
+
+
+# Search view
+def search_posts(request):
+    query = request.GET.get('q', '')
+    tag = request.GET.get('tag', '')
+    
+    posts = Post.objects.all().order_by('-published_date')
+    
+    if query:
+        posts = posts.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(author__username__icontains=query) |
+            Q(tags__name__icontains=query)
+        ).distinct()
+    
+    if tag:
+        posts = posts.filter(tags__slug=tag).distinct()
+    
+    context = {
+        'posts': posts,
+        'query': query,
+        'tag': tag,
+        'all_tags': Tag.objects.all(),
+        'title': 'Search Results'
+    }
+    
+    return render(request, 'blog/search_results.html', context)
+
 
 @login_required
 def add_comment(request, post_id):
@@ -115,10 +179,12 @@ def add_comment(request, post_id):
     
     return redirect('post-detail', pk=post.id)
 
+
 class CommentCreateView(LoginRequiredMixin, CreateView):
     model = Comment
     form_class = CommentForm
     template_name = 'blog/comment_form.html'
+    
     
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
@@ -136,6 +202,7 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
 
+
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
     template_name = 'blog/comment_confirm_delete.html'
@@ -146,3 +213,15 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     
     def get_success_url(self):
         return reverse_lazy('post-detail', kwargs={'pk': self.object.post.id})
+
+
+# Tag detail view
+class TagDetailView(DetailView):
+    model = Tag
+    template_name = 'blog/tag_detail.html'
+    context_object_name = 'tag'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['posts'] = self.object.posts.all().order_by('-published_date')
+        return context
