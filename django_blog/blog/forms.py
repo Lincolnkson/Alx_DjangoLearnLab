@@ -3,6 +3,24 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Post, Comment, Tag
 
+# Custom Tag Widget
+class TagWidget(forms.TextInput):
+    """
+    Custom widget for handling tags with autocomplete functionality
+    """
+    class Media:
+        css = {
+            'all': ('css/tagwidget.css',)
+        }
+        js = ('js/tagwidget.js',)
+    
+    def __init__(self, attrs=None):
+        default_attrs = {'class': 'form-control tag-input', 'data-role': 'tagsinput'}
+        if attrs:
+            default_attrs.update(attrs)
+        super().__init__(default_attrs)
+
+
 class CustomUserCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     
@@ -17,6 +35,7 @@ class CustomUserCreationForm(UserCreationForm):
             user.save()
         return user
 
+
 class UserUpdateForm(forms.ModelForm):
     email = forms.EmailField()
     
@@ -24,19 +43,18 @@ class UserUpdateForm(forms.ModelForm):
         model = User
         fields = ['username', 'email']
 
+
 # class ProfileUpdateForm(forms.ModelForm):
 #     class Meta:
 #         model = User
 #         fields = ['image']
 
+
 class PostForm(forms.ModelForm):
     tags_input = forms.CharField(
         label='Tags', 
         required=False,
-        widget=forms.TextInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'Enter tags separated by commas (e.g., python, django, web)'
-        }),
+        widget=TagWidget(),
         help_text='Enter tags separated by commas.'
     )
     
@@ -76,6 +94,7 @@ class PostForm(forms.ModelForm):
                     post.tags.add(tag)
                     
         return post       
+
 
 class CommentForm(forms.ModelForm):
     class Meta:
